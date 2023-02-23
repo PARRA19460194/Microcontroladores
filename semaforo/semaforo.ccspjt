@@ -1,0 +1,30 @@
+[PROJECT]
+Target=semaforo.hex
+Processor_Text=PIC16F877A
+CCSVersion=5.025
+Compiler=PCM
+[Target Data]
+FileList=semaforo.c
+[semaforo.c]
+Type=4
+[mru-list]
+1=semaforo.c
+
+[Opened Files]
+1=semaforo.c
+2=
+[Units]
+Count=1
+1=semaforo (main)
+
+[ProjectLog]
+Days=2
+D1=20-02-2023
+D1_L=3
+D1_L1=[38457]Project Closed.
+D1_L2=[38927]Project Opened.
+D1_L3=[39044]Project Closed.
+D2=21-02-2023
+D2_L=2
+D2_L1=[37577]Project Opened.
+D2_L2=[37615]Project Closed.

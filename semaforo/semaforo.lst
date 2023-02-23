@@ -1,0 +1,205 @@
+CCS PCM C Compiler, Version 5.025, 38221               20-feb.-23 10:25
+
+               Filename:   C:\Users\User\Desktop\Escuela\Micro\Unidad 2\semaforo\semaforo.lst
+
+               ROM used:   125 words (2%)
+                           Largest free fragment is 2048
+               RAM used:   12 (3%) at main() level
+                           16 (4%) worst case
+               Stack used: 1 locations
+               Stack size: 8
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   018
+0003:  NOP
+.................... #include <16F877a.h> 
+.................... //////////// Standard Header file for the PIC16F877A device //////////////// 
+.................... /////////////////////////////////////////////////////////////////////////// 
+.................... ////        (C) Copyright 1996, 2013 Custom Computer Services          //// 
+.................... //// This source code may only be used by licensed users of the CCS C  //// 
+.................... //// compiler.  This source code may only be distributed to other      //// 
+.................... //// licensed users of the CCS C compiler.  No other use, reproduction //// 
+.................... //// or distribution is permitted without written permission.          //// 
+.................... //// Derivative programs created using this software in object code    //// 
+.................... //// form are not restricted in any way.                               //// 
+.................... /////////////////////////////////////////////////////////////////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+....................    #device ADC=10 
+....................    #use delay(crystal=20000000) 
+0004:  MOVLW  2A
+0005:  MOVWF  04
+0006:  BCF    03.7
+0007:  MOVF   00,W
+0008:  BTFSC  03.2
+0009:  GOTO   017
+000A:  MOVLW  06
+000B:  MOVWF  78
+000C:  CLRF   77
+000D:  DECFSZ 77,F
+000E:  GOTO   00D
+000F:  DECFSZ 78,F
+0010:  GOTO   00C
+0011:  MOVLW  7B
+0012:  MOVWF  77
+0013:  DECFSZ 77,F
+0014:  GOTO   013
+0015:  DECFSZ 00,F
+0016:  GOTO   00A
+0017:  RETURN
+....................    #FUSES NOWDT, NOBROWNOUT, NOLVP 
+....................        
+....................    #USE STANDARD_IO(B) 
+....................    #USE STANDARD_IO(C) 
+....................        
+....................    int8 num[3] = { 
+....................    0b00000000, 
+....................    0b00000001, 
+....................    0b00000010 
+....................    }; 
+*
+0027:  BCF    03.5
+0028:  CLRF   21
+0029:  MOVLW  01
+002A:  MOVWF  22
+002B:  MOVLW  02
+002C:  MOVWF  23
+....................                       
+....................    int GREEN = 0;     //Declarar el valor del LED verde en 0 
+....................    int RED = 0;       //Declarar el valor del LED rojo en 0 
+....................        
+....................    Void main(){ 
+*
+0018:  MOVF   03,W
+0019:  ANDLW  1F
+001A:  MOVWF  03
+001B:  MOVLW  FF
+001C:  MOVWF  20
+001D:  CLRF   24
+001E:  CLRF   25
+001F:  BSF    03.5
+0020:  BSF    1F.0
+0021:  BSF    1F.1
+0022:  BSF    1F.2
+0023:  BCF    1F.3
+0024:  MOVLW  07
+0025:  MOVWF  1C
+0026:  BCF    03.7
+....................        
+....................    port_b_pullups(true); 
+*
+002D:  BSF    03.5
+002E:  BCF    01.7
+....................        
+....................    while (true){       //Modo de ciclo sin fin como un semaforo de la vida real. 
+....................     
+....................           
+....................    for(int GREEN = 0; GREEN < 40 ; GREEN++){   
+002F:  BCF    03.5
+0030:  CLRF   26
+0031:  MOVF   26,W
+0032:  SUBLW  27
+0033:  BTFSS  03.0
+0034:  GOTO   048
+....................    output_b(num[1]); 
+0035:  BSF    03.5
+0036:  CLRF   06
+0037:  BCF    03.5
+0038:  MOVF   22,W
+0039:  MOVWF  06
+....................    delay_ms(100); 
+003A:  MOVLW  64
+003B:  MOVWF  2A
+003C:  CALL   004
+....................    if(input(PIN_C0)==1){   //si se presiona el boton, el led verde sale del for y se va a amarillo 
+003D:  BSF    20.0
+003E:  MOVF   20,W
+003F:  BSF    03.5
+0040:  MOVWF  07
+0041:  BCF    03.5
+0042:  BTFSS  07.0
+0043:  GOTO   046
+....................    GREEN = 40;             //Declaron del pin del boton en C0 
+0044:  MOVLW  28
+0045:  MOVWF  26
+....................    } 
+0046:  INCF   26,F
+0047:  GOTO   031
+....................    } 
+....................                  
+....................    For (int YELLOW = 0; YELLOW < 4; YELLOW++){    //genera 4 pulsos, uno cada 350ms 
+0048:  CLRF   27
+0049:  MOVF   27,W
+004A:  SUBLW  03
+004B:  BTFSS  03.0
+004C:  GOTO   066
+....................    output_b(num[2]);  
+004D:  BSF    03.5
+004E:  CLRF   06
+004F:  BCF    03.5
+0050:  MOVF   23,W
+0051:  MOVWF  06
+....................    delay_ms(350); 
+0052:  MOVLW  02
+0053:  MOVWF  29
+0054:  MOVLW  AF
+0055:  MOVWF  2A
+0056:  CALL   004
+0057:  DECFSZ 29,F
+0058:  GOTO   054
+....................    output_low(PIN_B1);     //no hay instruccion de boton, por lo tanto no sucede nada 
+0059:  BSF    03.5
+005A:  BCF    06.1
+005B:  BCF    03.5
+005C:  BCF    06.1
+....................    delay_ms(350); 
+005D:  MOVLW  02
+005E:  MOVWF  29
+005F:  MOVLW  AF
+0060:  MOVWF  2A
+0061:  CALL   004
+0062:  DECFSZ 29,F
+0063:  GOTO   05F
+0064:  INCF   27,F
+0065:  GOTO   049
+....................    } 
+....................                  
+....................    for(int RED = 0; RED < 110; RED++){ 
+0066:  CLRF   28
+0067:  MOVF   28,W
+0068:  SUBLW  6D
+0069:  BTFSS  03.0
+006A:  GOTO   07B
+....................    output_high(PIN_B2);  
+006B:  BSF    03.5
+006C:  BCF    06.2
+006D:  BCF    03.5
+006E:  BSF    06.2
+....................    delay_ms(50); 
+006F:  MOVLW  32
+0070:  MOVWF  2A
+0071:  CALL   004
+....................    if(input(PIN_C0)==1){   //si se presiona el boton la cuenta se regresa a 0 
+0072:  BSF    20.0
+0073:  MOVF   20,W
+0074:  BSF    03.5
+0075:  MOVWF  07
+0076:  BCF    03.5
+0077:  BTFSC  07.0
+....................    RED=0;                 //Declaracion del pin del boton en C0 
+0078:  CLRF   28
+....................    } 
+0079:  INCF   28,F
+007A:  GOTO   067
+....................    } 
+007B:  GOTO   030
+....................    } 
+....................    } 
+007C:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3F32   HS NOWDT PUT NOBROWNOUT NOLVP NOCPD NOWRT NODEBUG NOPROTECT
